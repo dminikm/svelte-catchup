@@ -8,3 +8,11 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Pocketbase
+/pb_data/
+/pocketbase.exe
+/pocketbase
+
+# Editor files
+/.vscode/
