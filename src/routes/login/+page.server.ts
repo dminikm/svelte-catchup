@@ -1,6 +1,7 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect, type Load } from '@sveltejs/kit';
 import { loginAction } from './types';
+import type { User } from '$lib/authContext';
 
 export const load: PageServerLoad = ({ locals }) => {
   // Redirect away from this page when logged in
@@ -27,8 +28,11 @@ export const actions = {
 
     const { username, password, redirectTo } = result.data;
 
+    let user: User | null = null;
     try {
-      await locals.pocketbase.collection('users').authWithPassword(username, password);
+      let result = await locals.pocketbase.collection('users').authWithPassword(username, password);
+      user = { id: result.record.id, name: result.record.username, image: result.record.avatar };
+
       // Set cookies on success
       cookies.set('session', locals.pocketbase.authStore.exportToCookie());
     } catch (err) {
@@ -46,6 +50,6 @@ export const actions = {
       throw redirect(302, redirectTo);
     }
 
-    return { formId, success: true };
+    return { formId, success: true, user };
   },
 } satisfies Actions;

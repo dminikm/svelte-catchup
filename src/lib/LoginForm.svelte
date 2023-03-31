@@ -5,20 +5,34 @@
   import TextField from './TextField.svelte';
   import { applyAction, type SubmitFunction } from '$app/forms';
   import { page } from '$app/stores';
+  import { createEventDispatcher } from 'svelte';
+  import { getAuthContext, type User } from './authContext';
+
+  let dispatch = createEventDispatcher();
+  const authStore = getAuthContext();
 
   $: pagePath = $page.url.pathname;
   $: pageQuery = $page.url.searchParams.get('redirectTo');
+
+  const dispatchLogin = (user: User) => {
+    authStore.set(user);
+    dispatch('login');
+  };
 
   const loginEnhancer: SubmitFunction = () => {
     return async ({ result }) => {
       // Apply actions on success or failure
       if (result.type === 'success' || result.type === 'failure') {
-        return await applyAction(result);
+        await applyAction(result);
+
+        if (result.type === 'success') {
+          dispatchLogin(result?.data?.user);
+        }
       }
 
       // Redirect only when on the login page
       if (result.type === 'redirect' && pagePath.startsWith('/login')) {
-        return await applyAction(result);
+        await applyAction(result);
       }
     };
   };

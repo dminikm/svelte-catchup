@@ -1,8 +1,11 @@
 <script>
   import LoginButton from '$lib/header/LoginButton.svelte';
-  import { authStore } from '$lib/authStore';
+  import { getAuthContext } from '$lib/authContext';
   import Avatar from '$lib/Avatar.svelte';
+  import LoginForm from '$lib/LoginForm.svelte';
+  import Dialog from '$lib/Dialog.svelte';
 
+  const authStore = getAuthContext();
   $: user = $authStore;
 
   let loginModalOpen = false;
@@ -32,3 +35,9 @@
 </header>
 
 <slot />
+
+<Dialog open={loginModalOpen} on:close={() => (loginModalOpen = false)}>
+  <div class="p-8">
+    <LoginForm on:login={() => (loginModalOpen = false)} />
+  </div>
+</Dialog>
