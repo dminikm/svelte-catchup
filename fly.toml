@@ -4,6 +4,10 @@ app = "svelte-catchup"
 kill_timeout = 0
 primary_region = "ams"
 
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
 [mounts]
   source = "pb_data"
   destination = "/pb/pb_data"
@@ -21,7 +25,7 @@ primary_region = "ams"
   [[services.ports]]
     port = 443
     handlers = ["tls", "http"]
-    
+
   [services.concurrency]
     type = "connections"
     hard_limit = 25
