@@ -1,7 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 import type PocketBase from 'pocketbase';
-import type User from './lib/authStore';
+import type { User } from '$lib/authContext';
 
 declare global {
   namespace App {

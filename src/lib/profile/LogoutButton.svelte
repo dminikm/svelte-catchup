@@ -3,6 +3,6 @@
   import Form from '$lib/Form.svelte';
 </script>
 
-<Form id="logout" method="POST" action="/logout" enhance>
+<Form id="logout" method="POST" action="/logout">
   <Button color="error" submit>Log Out</Button>
 </Form>
