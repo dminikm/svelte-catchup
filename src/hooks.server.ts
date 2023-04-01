@@ -21,7 +21,6 @@ export const handle: Handle = async ({ event, resolve }) => {
       let response = await client.collection('users').authRefresh();
 
       event.locals.user = { id: response.record.id, name: response.record.username, image: response.record.avatar };
-      console.log('Response: ', event.locals.user);
     }
   } catch (_) {
     console.log('Failed to auth!');

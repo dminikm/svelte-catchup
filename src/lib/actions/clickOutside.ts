@@ -1,7 +1,5 @@
 export default function clickOutside(node: HTMLElement, handler: () => void) {
   const handleClick = (event: Event) => {
-    console.log(event);
-
     if (!node.contains(event.target as any)) {
       handler();
     }

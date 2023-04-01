@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-  export type Size = 'sm' | 'md' | 'lg';
+  export type Size = 'xs' | 'sm' | 'md' | 'lg';
 </script>
 
 <script lang="ts">
@@ -26,6 +26,10 @@
 </div>
 
 <style>
+  .xs {
+    @apply w-5 h-5;
+  }
+
   .sm {
     @apply w-10 h-10;
   }
