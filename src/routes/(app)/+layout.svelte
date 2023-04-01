@@ -55,7 +55,7 @@
             on:mouseenter={handleOpenAvatarMenu}
             on:mouseleave={handleCloseAvatarMenu}
           >
-            <Avatar name={user.name} image={user.image} />
+            <Avatar id={user.id} name={user.name} image={user.image} />
           </a>
         {:else}
           <LoginButton on:click={handleLoginClick} />

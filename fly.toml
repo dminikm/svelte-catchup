@@ -4,7 +4,10 @@ app = "svelte-catchup"
 kill_signal = "SIGTERM"
 kill_timeout = 5
 processes = []
-primary_region = "cdg"
+
+[mounts]
+  source = "pb_data"
+  destination = "/pb/pb_data"
 
 [experimental]
   allowed_public_ports = []

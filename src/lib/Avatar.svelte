@@ -6,6 +6,7 @@
   import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
   export let name: string;
+  export let id: string;
   export let image: string | undefined | null = undefined;
   export let size: Size = 'sm';
 
@@ -19,7 +20,7 @@
   {#if image}
     <img
       class="absolute left-0 top-0 {size}"
-      src="{PUBLIC_BACKEND_URL}/api/files/_pb_users_auth_/1qnnmtfj19yzp83/{image}"
+      src="{PUBLIC_BACKEND_URL}/api/files/_pb_users_auth_/{id}/{image}"
       alt={name}
     />
   {/if}

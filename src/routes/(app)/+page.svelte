@@ -22,7 +22,7 @@
 
         <div class="flex flex-row justify-between p-2">
           <span>
-            <Avatar size="xs" name={post.author.username} image={post.author.avatar} />
+            <Avatar id={post.author.id} size="xs" name={post.author.username} image={post.author.avatar} />
             {post.author.username}
           </span>
 
