@@ -21,7 +21,7 @@ export const actions = {
     if (!result.success) {
       return fail(400, {
         formId,
-        values: { username: 'Hello' },
+        values: { username: formData.get('username') },
         errors: result.error.formErrors.fieldErrors,
       });
     }
