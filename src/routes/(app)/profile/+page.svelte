@@ -19,7 +19,7 @@
       <h2 class="section-heading">Profile</h2>
 
       <div class="flex gap-3 mt-3">
-        <Avatar size="md" name={user?.name ?? ''} image={user?.image} />
+        <Avatar id={user?.id ?? ''} size="md" name={user?.name ?? ''} image={user?.image} />
         <div class="flex flex-col">
           <span class="text-lg font-semibold flex-grow">
             {user?.name}
