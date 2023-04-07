@@ -11,6 +11,7 @@
     error: string | null;
   };
 
+  type FormMethod = 'POST' | 'GET';
   type KeyType = string | number | symbol;
   type FormState<Keys extends KeyType> = Record<Keys, FieldState>;
   type ErrorState<Keys extends KeyType> = Record<Keys, string | null | undefined>;
@@ -55,7 +56,7 @@
 <script lang="ts">
   type SchemaType = $$Generic<AnyZodObject>;
 
-  export let method: string;
+  export let method: FormMethod = 'POST';
   export let id: string;
   export let action: string;
   // @ts-ignore
@@ -71,7 +72,7 @@
   let initialState = getFormValues(formState);
   $: formErrors = getFormStateErrors(formState);
 
-  const onTextInput = (_: InputEvent, target: HTMLInputElement) => {
+  const onTextInput = (_: InputEvent, target: HTMLInputElement | HTMLTextAreaElement) => {
     const inputName = target.name;
 
     if (inputName in formState) {
@@ -96,7 +97,10 @@
       throw new TypeError(`Expected an input event, got ${ev.type} instead!`);
     }
 
-    if (ev.target instanceof HTMLInputElement && ev.target.type === 'text') {
+    if (
+      (ev.target instanceof HTMLInputElement && ev.target.type === 'text') ||
+      (ev.target instanceof HTMLTextAreaElement && ev.target.type === 'textarea')
+    ) {
       return onTextInput(ev as InputEvent, ev.target);
     }
 

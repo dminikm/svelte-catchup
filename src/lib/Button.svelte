@@ -23,7 +23,7 @@
 
 <button
   type={submit ? 'submit' : 'button'}
-  class="font-bold py-2 px-4 rounded {variant} {color} transition-colors"
+  class="{$$restProps.class} font-bold py-2 px-4 rounded {variant} {color} transition-colors"
   style:width={getWidth(width)}
   on:click
 >
