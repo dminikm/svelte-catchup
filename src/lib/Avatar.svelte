@@ -19,7 +19,7 @@
   <span class="font-medium text-gray-600 dark:text-gray-300">{initials}</span>
   {#if image}
     <img
-      class="absolute left-0 top-0 {size}"
+      class="absolute left-0 top-0 {size} object-cover"
       src="{PUBLIC_BACKEND_URL}/api/files/_pb_users_auth_/{id}/{image}"
       alt={name}
     />

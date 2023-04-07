@@ -8,6 +8,10 @@
   $: user = $authStore;
 </script>
 
+<svelte:head>
+  <title>Profile</title>
+</svelte:head>
+
 <div class="flex flex-row mt-4">
   <div class="nav-container">
     <a href="#profile" class="nav-link" use:scrollTo>Profile</a>

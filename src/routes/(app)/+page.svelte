@@ -10,6 +10,10 @@
   };
 </script>
 
+<svelte:head>
+  <title>Svelte Catchup</title>
+</svelte:head>
+
 <h1 class="font-bold text-3xl m-6">Latests Posts:</h1>
 
 <main class="flex flex-row flex-wrap gap-6 p-12">
