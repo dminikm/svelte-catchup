@@ -5,6 +5,7 @@ export const commentActionValidator = z.object({
 });
 
 export const commentValidator = z.object({
+  id: z.string(),
   content: z.string(),
   created: z.string(),
   expand: z.object({
