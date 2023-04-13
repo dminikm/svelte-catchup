@@ -18,23 +18,34 @@
 
 <main class="flex flex-row flex-wrap gap-6 p-12">
   {#each data.posts as post (post.id)}
-    <a href="/article/{post.id}">
-      <article class="border border-gray-500 w-72 max-w-sm flex flex-col gap-2">
-        <img src={getSource(post.id, post.image)} alt={post.title} class="col-span-2 w-full max-h-64 object-contain" />
+    <article class="border border-gray-500 w-72 max-w-sm flex flex-col gap-2">
+      <img src={getSource(post.id, post.image)} alt={post.title} class="col-span-2 w-full max-h-64 object-contain" />
 
-        <h2 class="font-semibold text-xl col-span-2 px-2">{post.title}</h2>
+      <h2 class="font-semibold text-xl col-span-2 px-2">
+        <a href="/article/{post.id}">{post.title}</a>
+      </h2>
 
-        <div class="flex flex-row justify-between p-2">
-          <span>
-            <Avatar id={post.author.id} size="xs" name={post.author.username} image={post.author.avatar} />
-            {post.author.username}
-          </span>
+      <div class="flex flex-row justify-between p-2">
+        <span>
+          <Avatar id={post.author.id} size="xs" name={post.author.username} image={post.author.avatar} />
+          {post.author.username}
+        </span>
 
-          <span class="text-gray-400 font-medium">
-            {post.created.toDateString()}
-          </span>
-        </div>
-      </article>
-    </a>
+        <span class="text-gray-400 font-medium">
+          {post.created.toDateString()}
+        </span>
+      </div>
+    </article>
   {/each}
 </main>
+
+<style lang="postcss">
+  article {
+    @apply relative;
+  }
+
+  a::before {
+    content: '';
+    @apply absolute left-0 right-0 top-0 bottom-0 z-10;
+  }
+</style>
