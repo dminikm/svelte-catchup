@@ -34,7 +34,9 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <dialog bind:this={dialog} on:click={handleClickOutside}>
-  <slot />
+  {#if open}
+    <slot />
+  {/if}
 </dialog>
 
 <style lang="postcss">
