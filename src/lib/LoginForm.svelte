@@ -12,7 +12,7 @@
   const authStore = getAuthContext();
 
   $: pagePath = $page.url.pathname;
-  $: pageQuery = $page.url.searchParams.get('redirectTo');
+  $: pageQuery = $page.url.searchParams.get('redirectTo') ?? $page?.form?.redirectTo;
 
   const dispatchLogin = (user: User) => {
     authStore.set(user);
@@ -51,7 +51,7 @@
 >
   <!-- Redirect from the login page -->
   {#if pagePath.startsWith('/login')}
-    <input type="hidden" name="redirectTo" value={pageQuery} />
+    <input type="hidden" name="redirectTo" value={pageQuery ?? '/'} />
   {/if}
 
   <TextField
