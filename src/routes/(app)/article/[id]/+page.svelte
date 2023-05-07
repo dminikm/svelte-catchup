@@ -3,7 +3,7 @@
   import Comment from '$lib/Comment.svelte';
   import CommentForm from '$lib/CommentForm.svelte';
   import { onMount } from 'svelte';
-  import type { PageData } from './$types';
+  import type { PageData, Snapshot } from './$types';
   import type { Comment as IComment } from './comments/types';
 
   export let data: PageData;
@@ -40,6 +40,16 @@
 
   // Invalidate optimistic comments (when old comments get updated!)
   $: invalidateOptimisticComments(oldComments);
+
+  let commentSnapshot: Snapshot | undefined;
+  export const snapshot = {
+    capture() {
+      return commentSnapshot?.capture();
+    },
+    restore(snapshot) {
+      return commentSnapshot?.restore(snapshot);
+    },
+  };
 </script>
 
 <svelte:head>
@@ -52,7 +62,7 @@
 
   {@html post.content}
 
-  <CommentForm data={form} postId={post.id} on:comment={handleComment} />
+  <CommentForm data={form} postId={post.id} on:comment={handleComment} bind:snapshot={commentSnapshot} />
 
   <section>
     <h1>Comments</h1>

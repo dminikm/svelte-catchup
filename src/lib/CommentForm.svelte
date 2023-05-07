@@ -13,7 +13,7 @@
   let authStore = getAuthContext();
   $: user = $authStore;
 
-  const { form, constraints, errors, enhance } = superForm(data, {
+  const { form, constraints, errors, enhance, capture, restore } = superForm(data, {
     id: 'comment',
     validators: commentActionValidator,
     validationMethod: 'oninput',
@@ -34,6 +34,8 @@
       });
     },
   });
+
+  export const snapshot = { capture, restore };
 </script>
 
 <section>

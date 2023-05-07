@@ -1,7 +1,7 @@
 <script lang="ts">
   import Comment from '$lib/Comment.svelte';
   import CommentForm from '$lib/CommentForm.svelte';
-  import type { PageData } from './$types';
+  import type { PageData, Snapshot } from './$types';
   import type { Comment as IComment } from './types';
 
   export let data: PageData;
@@ -18,6 +18,16 @@
 
   // Invalidate optimistic comments
   $: invalidateOptimisticComments(comments);
+
+  let commentSnapshot: Snapshot | undefined;
+  export const snapshot = {
+    capture() {
+      return commentSnapshot?.capture();
+    },
+    restore(snapshot) {
+      return commentSnapshot?.restore(snapshot);
+    },
+  };
 </script>
 
 <svelte:head>
@@ -27,7 +37,7 @@
 <article class="article-container max-w-2xl m-auto py-3 px-6">
   <h1 class="font-bold text-3xl my-3">Comments for {post.title}</h1>
 
-  <CommentForm data={data.form} postId={post.id} on:comment={handleComment} />
+  <CommentForm data={data.form} postId={post.id} on:comment={handleComment} bind:snapshot={commentSnapshot} />
 
   <section>
     <!-- Comments -->
