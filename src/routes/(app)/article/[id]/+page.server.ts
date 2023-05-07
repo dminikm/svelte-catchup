@@ -1,5 +1,7 @@
 import { adminPB } from '$lib/server/pb';
+import { superValidate } from 'sveltekit-superforms/server';
 import { z } from 'zod';
+import { commentActionValidator } from './comments/types.js';
 
 const userValidator = z.object({
   id: z.string(),
@@ -39,6 +41,7 @@ function delay<T>(prom: Promise<T>, delayMs: number = 1000): Promise<T> {
 export async function load({ params }) {
   const post = await adminPB.collection('posts').getOne(params.id, { expand: 'author' });
   const validatedPost = await articleValidator.parseAsync(post);
+  const form = await superValidate(commentActionValidator, { id: 'comment' });
 
   const validatedComments = delay(
     adminPB
@@ -66,6 +69,7 @@ export async function load({ params }) {
   };
 
   return {
+    form,
     post: remappedPost,
     streamed: {
       comments: validatedComments,

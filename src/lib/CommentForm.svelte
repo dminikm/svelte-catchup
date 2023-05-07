@@ -13,7 +13,7 @@
   let authStore = getAuthContext();
   $: user = $authStore;
 
-  const { form, constraints, errors, firstError, enhance } = superForm(data, {
+  const { form, constraints, errors, enhance } = superForm(data, {
     id: 'comment',
     validators: commentActionValidator,
     validationMethod: 'oninput',

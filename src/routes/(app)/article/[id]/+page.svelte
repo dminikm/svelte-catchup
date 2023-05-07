@@ -7,9 +7,7 @@
   import type { Comment as IComment } from './comments/types';
 
   export let data: PageData;
-  $: ({ post, streamed } = data);
-
-  let newComments: IComment[] = [];
+  $: ({ form, post, streamed } = data);
 
   // Start with a link to comments.
   // Then when client side JS kicks in
@@ -23,9 +21,25 @@
     return `${PUBLIC_BACKEND_URL}/api/files/3j0nl4c9ume5i14/${articleId}/${url}`;
   };
 
-  const handleComment = (ev: CustomEvent<{ comment: IComment }>) => {
-    newComments = [ev.detail.comment, ...newComments];
+  // Remember old comments
+  let oldComments: IComment[] = [];
+  const rememberComments = async (...args: any[]) => {
+    oldComments = await streamed.comments;
   };
+
+  $: rememberComments(streamed.comments);
+
+  let optimisticComments: IComment[] = [];
+  const handleComment = (ev: CustomEvent<{ comment: IComment }>) => {
+    optimisticComments = [ev.detail.comment, ...optimisticComments];
+  };
+
+  const invalidateOptimisticComments = (...args: any[]) => {
+    optimisticComments = [];
+  };
+
+  // Invalidate optimistic comments (when old comments get updated!)
+  $: invalidateOptimisticComments(oldComments);
 </script>
 
 <svelte:head>
@@ -38,29 +52,29 @@
 
   {@html post.content}
 
-  <CommentForm postId={post.id} on:comment={handleComment} />
+  <CommentForm data={form} postId={post.id} on:comment={handleComment} />
 
   <section>
     <h1>Comments</h1>
     <!-- Comments -->
     {#await streamed.comments}
-      {#if !loadingComments}
+      {#if oldComments.length > 0}
+        {#each oldComments as comment (comment.id)}
+          <Comment
+            id={comment.id}
+            authorId={comment.author.id}
+            name={comment.author.username}
+            image={comment.author.avatar}
+            content={comment.content}
+            created={comment.created}
+          />
+        {/each}
+      {:else if !loadingComments}
         <a class="comment-loading" href={`/article/${post.id}/comments`}>Load comments</a>
       {:else}
         <div class="comment-loading cursor-progress">Loading comments ...</div>
       {/if}
     {:then comments}
-      {#each newComments as comment (comment.id)}
-        <Comment
-          id={comment.id}
-          authorId={comment.author.id}
-          name={comment.author.username}
-          image={comment.author.avatar}
-          content={comment.content}
-          created={comment.created}
-        />
-      {/each}
-
       {#each comments as comment (comment.id)}
         <Comment
           id={comment.id}
@@ -72,6 +86,17 @@
         />
       {/each}
     {/await}
+
+    {#each optimisticComments as comment (comment.id)}
+      <Comment
+        id={comment.id}
+        authorId={comment.author.id}
+        name={comment.author.username}
+        image={comment.author.avatar}
+        content={comment.content}
+        created={comment.created}
+      />
+    {/each}
   </section>
 </article>
 
