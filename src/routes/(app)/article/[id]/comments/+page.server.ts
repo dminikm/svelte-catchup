@@ -1,5 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import { commentActionValidator, commentValidator } from './types';
+import { superValidate, setError } from 'sveltekit-superforms/server';
 
 import { adminPB } from '$lib/server/pb';
 import { z } from 'zod';
@@ -28,6 +29,11 @@ export async function load({ params }) {
   const post = await adminPB.collection('posts').getOne(params.id, { expand: 'author' });
   const validatedPost = await articleValidator.parseAsync(post);
 
+  // Server API:
+  const form = await superValidate(commentActionValidator, {
+    id: 'comment',
+  });
+
   const validatedComments = adminPB
     .collection('comments')
     .getFullList({ filter: `post = "${post.id}"`, expand: 'author' })
@@ -51,6 +57,7 @@ export async function load({ params }) {
   };
 
   return {
+    form,
     post: remappedPost,
     comments: validatedComments,
   };
@@ -62,21 +69,17 @@ export const actions = {
       throw new Error('You must be signed in to post a comment!');
     }
 
-    const formData = await request.formData();
-    const formId = formData.get('formId');
+    const form = await superValidate(request, commentActionValidator, {
+      id: 'comment',
+    });
 
-    const data = Object.fromEntries(formData);
-    let result = commentActionValidator.safeParse(data);
-
-    if (!result.success) {
+    if (!form.valid) {
       return fail(400, {
-        formId,
-        values: { content: formData.get('content') },
-        errors: result.error.formErrors.fieldErrors,
+        form,
       });
     }
 
-    const { content } = result.data;
+    const { content } = form.data;
 
     try {
       let result = await locals.pocketbase.collection('comments').create(
@@ -91,8 +94,7 @@ export const actions = {
       let validatedComment = await commentValidator.parseAsync(result);
 
       return {
-        formId,
-        successs: true,
+        form,
         comment: {
           id: result.id,
           content,
@@ -101,13 +103,7 @@ export const actions = {
         },
       };
     } catch (err) {
-      return fail(400, {
-        formId,
-        values: { content },
-        errors: {
-          content: 'An error occured while posting comment!',
-        },
-      });
+      return setError(form, 'content', 'An error occured while posting comment!');
     }
   },
 };
