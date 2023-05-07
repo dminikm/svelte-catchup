@@ -2,6 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect, type Load } from '@sveltejs/kit';
 import { loginAction } from './types';
 import type { User } from '$lib/authContext';
+import { setError, superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = ({ locals }) => {
   // Redirect away from this page when logged in
@@ -12,22 +13,10 @@ export const load: PageServerLoad = ({ locals }) => {
 
 export const actions = {
   default: async ({ cookies, request, locals }) => {
-    const formData = await request.formData();
-    const formId = formData.get('formId');
+    const form = await superValidate(request, loginAction, { id: 'login' });
+    if (!form.valid) return fail(400, { form });
 
-    const data = Object.fromEntries(formData);
-    let result = loginAction.safeParse(data);
-
-    if (!result.success) {
-      return fail(400, {
-        formId,
-        redirectTo: formData.get('redirectTo'),
-        values: { username: formData.get('username') },
-        errors: result.error.formErrors.fieldErrors,
-      });
-    }
-
-    const { username, password, redirectTo } = result.data;
+    const { username, password, redirectTo } = form.data;
 
     let user: User | null = null;
     try {
@@ -37,13 +26,7 @@ export const actions = {
       // Set cookies on success
       cookies.set('session', locals.pocketbase.authStore.exportToCookie());
     } catch (err) {
-      return fail(400, {
-        formId,
-        values: { username },
-        errors: {
-          password: 'Invalid username or password',
-        },
-      });
+      return setError(form, 'password', 'Invalid username or password');
     }
 
     // If we have a redirect, redirect to that page
@@ -51,6 +34,6 @@ export const actions = {
       throw redirect(302, redirectTo);
     }
 
-    return { formId, success: true, user };
+    return { form, user };
   },
 } satisfies Actions;

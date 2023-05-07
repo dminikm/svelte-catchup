@@ -74,9 +74,7 @@ export const actions = {
     });
 
     if (!form.valid) {
-      return fail(400, {
-        form,
-      });
+      return fail(400, { form });
     }
 
     const { content } = form.data;

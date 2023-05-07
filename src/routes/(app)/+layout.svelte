@@ -8,6 +8,9 @@
   import LogoutButton from '$lib/profile/LogoutButton.svelte';
   import { fade } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
+  import type { PageData } from './$types';
+
+  export let data: PageData;
 
   const authStore = getAuthContext();
   $: user = $authStore;
@@ -69,7 +72,7 @@
 
 <Dialog open={loginModalOpen} on:close={() => (loginModalOpen = false)}>
   <div class="p-8">
-    <LoginForm on:login={() => (loginModalOpen = false)} />
+    <LoginForm data={data.loginForm} on:login={() => (loginModalOpen = false)} />
   </div>
 </Dialog>
 
